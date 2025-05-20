@@ -5,10 +5,18 @@
 
 # Environment variables
 [context.production.environment]
-  REACT_APP_API_URL = "https://coding-challenge-backend.onrender.com"
+  REACT_APP_API_URL = "https://coding-challenge-backend-jjd1.onrender.com"
   NODE_ENV = "production"
 
 # For branch deploys
+[context.branch-deploy.environment]
+  REACT_APP_API_URL = "https://coding-challenge-backend-jjd1.onrender.com"
+
+# Redirects for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 [context.branch-deploy.environment]
   REACT_APP_API_URL = "https://coding-challenge-backend-staging.onrender.com"
 
