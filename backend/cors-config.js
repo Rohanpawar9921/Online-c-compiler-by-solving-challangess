@@ -7,10 +7,12 @@ const corsOptions = {
     credentials: true,
     optionsSuccessStatus: 200
   },  production: {
-    // Replace with your actual frontend URL after deployment
-    origin: process.env.ALLOWED_ORIGINS 
-      ? process.env.ALLOWED_ORIGINS.split(',').filter(origin => origin.trim() !== '')
-      : ['https://your-netlify-app.netlify.app', 'https://yourdomain.com'],
+    // In production, we use the ALLOWED_ORIGINS env var, or allow all ('*') during initial setup
+    origin: process.env.ALLOWED_ORIGINS === '*' 
+      ? '*'
+      : process.env.ALLOWED_ORIGINS 
+        ? process.env.ALLOWED_ORIGINS.split(',').filter(origin => origin.trim() !== '')
+        : ['https://coding-challenge-platform.netlify.app'],
     credentials: true,
     optionsSuccessStatus: 200
   }
