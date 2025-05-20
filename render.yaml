@@ -8,9 +8,9 @@ services:
     buildCommand: npm install
     startCommand: node index.js
     healthCheckPath: /api/health
-    envVars:
-      - key: NODE_ENV
-        value: production      - key: JWT_SECRET
+    envVars:      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
         generateValue: true  # Automatically generate a secret
       - key: ALLOWED_ORIGINS
         value: "*"  # Allow all origins initially
