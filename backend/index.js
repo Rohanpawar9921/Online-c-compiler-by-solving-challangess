@@ -59,17 +59,18 @@ const mongooseOptions = {
   socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
 };
 
-mongoose.connect(MONGO_URI, mongooseOptions)
-  .then(() => console.log('MongoDB connected successfully'))
+// Try to use the config file for MongoDB connection
+const config = require('./config');
+console.log('Using MongoDB connection from config:', config.MONGODB.URI.replace(/:([^@]+)@/, ':***@'));
+
+mongoose.connect(config.MONGODB.URI, config.MONGODB.options)
+  .then(() => console.log('MongoDB connected successfully via config'))
   .catch(err => {
-    console.error('MongoDB connection error:', err);
-    console.error('Connection string was:', MONGO_URI.replace(/:([^@]+)@/, ':***@'));
+    console.error('MongoDB connection error with config:', err.message);
+    console.error('Trying direct connection as fallback...');
     
-    // Try connecting with the hardcoded Atlas URI as a last resort
-    if (MONGO_URI !== ATLAS_URI) {
-      console.log('Trying fallback connection string...');
-      return mongoose.connect(ATLAS_URI, mongooseOptions);
-    }
+    // Fallback to direct connection
+    return mongoose.connect(MONGO_URI, mongooseOptions);
   })
   .then(() => {
     if (mongoose.connection.readyState === 1) {
@@ -77,7 +78,7 @@ mongoose.connect(MONGO_URI, mongooseOptions)
     }
   })
   .catch(err => {
-    console.error('All MongoDB connection attempts failed:', err);
+    console.error('All MongoDB connection attempts failed:', err.message);
     console.error('Please check your MONGO_URI environment variable');
   });
 
@@ -129,7 +130,7 @@ app.post("/login", async (req, res) => {
     const valid = await user.comparePassword(req.body.password);
     if (!valid) return res.status(401).json({ error: "Invalid credentials" });
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ userId: user._id }, config.JWT.secret, { expiresIn: config.JWT.expiresIn });
 
     res.json({ token, user: { id: user._id, email: user.email } });
   } catch (err) {
@@ -142,7 +143,7 @@ const authenticate = (req, res, next) => {
   if (!token) return res.status(401).json({ error: "Unauthorized" });
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, config.JWT.secret);
     req.userId = decoded.userId;
     next();
   } catch (err) {

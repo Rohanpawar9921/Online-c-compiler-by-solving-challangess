@@ -16,3 +16,5 @@ services:
         value: "*"  # Allow all origins initially
       - key: MONGO_URI
         value: mongodb+srv://rohanpawar3307:XKC6s6Gr7xX9Ryzv@cluster0.0usljpu.mongodb.net/coding-challenge-db?retryWrites=true&w=majority&appName=Cluster0
+      - key: NODE_ENV
+        value: production
