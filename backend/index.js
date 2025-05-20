@@ -18,15 +18,24 @@ require('dotenv').config();
 // Import routes
 const progressRoutes = require('./routes/progress');
 const challengesRoutes = require('./routes/challenges');
+const { getCorsOptions } = require('./cors-config');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/compiler-app");
+// Log the MongoDB URI (but hide credentials)
+const mongoUriForLogging = process.env.MONGO_URI 
+  ? process.env.MONGO_URI.replace(/:([^@]+)@/, ':***@') 
+  : "mongodb://localhost:27017/compiler-app";
+console.log('Attempting to connect to MongoDB:', mongoUriForLogging);
+
+mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/compiler-app")
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 const app = express();
 const docker = new Docker();
 
-app.use(cors());
+app.use(cors(getCorsOptions()));
 app.use(bodyParser.json());
 
 const authLimiter = rateLimit({
@@ -213,6 +222,7 @@ app.post('/compile', authenticate, async (req, res) => {
   }
 });
 
-app.listen(5000, () => {
-  console.log('Backend running on http://localhost:5000');
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
 });

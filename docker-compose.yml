@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/compiler-app}
+      - JWT_SECRET=${JWT_SECRET:-your_jwt_secret_for_local_dev_only}
+      - PORT=5000
+      - ALLOWED_ORIGINS=http://localhost:3000,https://your-netlify-app.netlify.app
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    depends_on:
+      - code-compiler
+  code-compiler:
+    build:
+      context: ./docker
+    privileged: false
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges=true
+    cpu_count: 1
+    mem_limit: 256m
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /tmp
+      
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+      - /tmp:size=64M,noexec
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - REACT_APP_API_URL=http://localhost:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+# For production, you'd likely deploy backend and frontend 
+# separately on Render.com and Netlify as described in HOSTING.md
