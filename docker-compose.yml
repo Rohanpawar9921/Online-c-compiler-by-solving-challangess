@@ -3,12 +3,11 @@ version: '3'
 services:
   backend:
     build:
-      context: ./backend
-    ports:
+      context: ./backend    ports:
       - "5000:5000"
     environment:
       - NODE_ENV=production
-      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/compiler-app}
+      - MONGO_URI=${MONGO_URI:-mongodb+srv://rohanpawar3307:XKC6s6Gr7xX9Ryzv@cluster0.0usljpu.mongodb.net/coding-challenge-db?retryWrites=true&w=majority&appName=Cluster0}
       - JWT_SECRET=${JWT_SECRET:-your_jwt_secret_for_local_dev_only}
       - PORT=5000
       - ALLOWED_ORIGINS=http://localhost:3000,https://your-netlify-app.netlify.app

@@ -15,4 +15,4 @@ services:
       - key: ALLOWED_ORIGINS
         value: "*"  # Allow all origins initially
       - key: MONGO_URI
-        value: mongodb+srv://rohanforhardstudy:7fuX9vHMPdQb9AUG@cluster0.wdkirrv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+        value: mongodb+srv://rohanpawar3307:XKC6s6Gr7xX9Ryzv@cluster0.0usljpu.mongodb.net/coding-challenge-db?retryWrites=true&w=majority&appName=Cluster0
