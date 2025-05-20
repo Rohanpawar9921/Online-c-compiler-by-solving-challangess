@@ -1,0 +1,11 @@
+# Base directory (where package.json is located)
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "build"
+
+# Handle single-page application routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

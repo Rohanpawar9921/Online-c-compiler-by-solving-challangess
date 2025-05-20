@@ -1,0 +1,12 @@
+{
+  "name": "coding-challenge-platform",
+  "version": "1.0.0",
+  "description": "Full-stack Coding Challenge Platform",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd frontend && npm start"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
