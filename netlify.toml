@@ -4,6 +4,11 @@
   command = "npm run build"
   publish = "build"
 
+# Environment variables for production
+[context.production.environment]
+  REACT_APP_API_URL = "https://coding-challenge-backend-jjd1.onrender.com"
+  NODE_ENV = "production"
+
 # Handle single-page application routing
 [[redirects]]
   from = "/*"

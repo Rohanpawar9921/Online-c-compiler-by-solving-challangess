@@ -10,16 +10,9 @@
 
 # For branch deploys
 [context.branch-deploy.environment]
-  REACT_APP_API_URL = "https://coding-challenge-backend-jjd1.onrender.com"
-
-# Redirects for client-side routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-[context.branch-deploy.environment]
   REACT_APP_API_URL = "https://coding-challenge-backend-staging.onrender.com"
 
+# Redirects for client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
