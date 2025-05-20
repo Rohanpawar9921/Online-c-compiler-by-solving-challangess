@@ -28,9 +28,24 @@ const mongoUriForLogging = process.env.MONGO_URI
   : "mongodb://localhost:27017/compiler-app";
 console.log('Attempting to connect to MongoDB:', mongoUriForLogging);
 
-mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/compiler-app")
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Define database name - ensure it's the same in all environments
+const DB_NAME = 'coding-challenge-db';
+
+// Make sure the connection string has the database name
+const MONGO_URI = process.env.MONGO_URI 
+  ? (process.env.MONGO_URI.includes('?') 
+      ? process.env.MONGO_URI.replace('?', `/${DB_NAME}?`) 
+      : `${process.env.MONGO_URI}/${DB_NAME}`)
+  : `mongodb://localhost:27017/${DB_NAME}`;
+
+console.log('MongoDB URI set:', MONGO_URI ? 'Yes' : 'No');
+
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    console.error('Please check your MONGO_URI environment variable');
+  });
 
 const app = express();
 const docker = new Docker();
@@ -49,6 +64,17 @@ app.use("/register", authLimiter);
      
 // Use routes - make sure this appears before your app.listen() call
 app.use('/api/progress', progressRoutes);
+app.use('/api/challenges', challengesRoutes);
+
+// Health check endpoint for Render.com
+app.get('/api/health', (req, res) => {
+  const health = {
+    uptime: process.uptime(),
+    message: 'OK',
+    timestamp: Date.now()
+  };
+  res.status(200).json(health);
+});
 
 app.post("/register", async (req, res) => {
   const { email, password } = req.body;

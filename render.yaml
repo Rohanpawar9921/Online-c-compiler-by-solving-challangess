@@ -1,0 +1,18 @@
+services:
+  # Backend API service
+  - type: web
+    name: coding-challenge-backend
+    env: node
+    region: oregon  # Choose a region close to your users
+    plan: free  # Free tier
+    buildCommand: npm install
+    startCommand: node index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production      - key: JWT_SECRET
+        generateValue: true  # Automatically generate a secret
+      - key: ALLOWED_ORIGINS
+        value: "*"  # Allow all origins initially
+      - key: MONGO_URI
+        value: mongodb+srv://rohanforhardstudy:7fuX9vHMPdQb9AUG@cluster0.wdkirrv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
