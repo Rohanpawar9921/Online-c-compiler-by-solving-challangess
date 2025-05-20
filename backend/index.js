@@ -83,7 +83,15 @@ mongoose.connect(config.MONGODB.URI, config.MONGODB.options)
   });
 
 const app = express();
-const docker = new Docker();
+let docker;
+
+try {
+  docker = new Docker();
+  console.log('Docker connection initialized');
+} catch (error) {
+  console.error('Failed to connect to Docker:', error.message);
+  console.log('Docker-based code execution will not be available');
+}
 
 app.use(cors(getCorsOptions()));
 app.use(bodyParser.json());
@@ -232,6 +240,15 @@ app.post('/compile', authenticate, async (req, res) => {
     return res.status(400).json({ error: 'No code provided.' });
   }
 
+  // Check if Docker is available
+  if (!docker) {
+    return res.status(503).json({ 
+      stderr: "Code execution is temporarily unavailable. Docker is not running or not accessible.",
+      stdout: "",
+      exit_code: 1
+    });
+  }
+
   try {
     const tmpDir = await mkdtemp(join(tmpdir(), 'c-compile-'));
 
@@ -278,7 +295,18 @@ app.post('/compile', authenticate, async (req, res) => {
       exit_code: 0,
     });
 
-  } catch (error) {
+    } catch (error) {
+    console.error('Code execution error:', error.message);
+    
+    // Check if it's a Docker connection error
+    if (error.code === 'ENOENT' && error.message.includes('docker.sock')) {
+      return res.status(503).json({ 
+        stderr: "Docker connection error: Docker is not running or not accessible. Please try again later.",
+        stdout: "",
+        exit_code: 1
+      });
+    }
+    
     res.status(500).json({ stderr: error.message });
   }
 });
