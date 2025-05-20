@@ -56,15 +56,16 @@ const Compiler = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log('Response from server:', response.data); // Log the response for debugging
-
-      setOutput(response.data.stdout);
+      console.log('Response from server:', response.data); // Log the response for debugging      setOutput(response.data.stdout);
       setError(response.data.stderr || '');
     } catch (err) {
       console.error('Compilation error:', err); // Log the error
       if (err.response?.status === 401) {
         localStorage.removeItem('token');
         navigate('/login');
+      } else if (err.response?.status === 503) {
+        // This is for Docker unavailable errors (service unavailable)
+        setError(err.response?.data?.stderr || 'Code execution is temporarily unavailable. Please try again later.');
       } else {
         setError(err.response?.data?.stderr || 'Compilation failed');
       }
@@ -99,15 +100,20 @@ const Compiler = () => {
         const expected = (testCase.output || '').trim();
         const pass = actual === expected;
 
-        if (!pass) passed = false;
-
-        results.push({ input: testCase.input, expected, actual, pass });
+        if (!pass) passed = false;        results.push({ input: testCase.input, expected, actual, pass });
       } catch (err) {
         console.error('Test case compilation error:', err); // Log error for test case
+        
+        // Handle Docker unavailable errors with a more user-friendly message
+        let errorMessage = 'Error';
+        if (err.response?.status === 503) {
+          errorMessage = 'Code execution is temporarily unavailable. Please try again later.';
+        }
+        
         results.push({
           input: testCase.input,
           expected: testCase.output,
-          actual: 'Error',
+          actual: errorMessage,
           pass: false,
         });
         passed = false;
@@ -172,12 +178,15 @@ const Compiler = () => {
           className="submit-btn"
         >
           Submit Challenge
-        </button>
-
-        <div className="output-group">
+        </button>        <div className="output-group">
           <h3>Output:</h3>
           <pre className={`output ${error ? 'error' : ''}`}>
-            {error || output || 'Your output will appear here...'}
+            {error ? (
+              <div className="error-message">
+                <span className="error-icon">⚠️</span> 
+                <span>{error}</span>
+              </div>
+            ) : output || 'Your output will appear here...'}
           </pre>
         </div>
 
