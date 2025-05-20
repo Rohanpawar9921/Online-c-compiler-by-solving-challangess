@@ -14,7 +14,18 @@ const User = require("./models/User");
 const Challenge = require("./models/Challenge");
 const Progress = require("./models/Progress");
 const Badge = require("./models/Badge");
-require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
+
+// Load .env file if it exists
+const dotenvPath = path.resolve(__dirname, '.env');
+if (fs.existsSync(dotenvPath)) {
+  console.log('.env file found, loading configuration...');
+  require('dotenv').config();
+} else {
+  console.log('.env file not found, relying on environment variables...');
+}
+
 // Import routes
 const progressRoutes = require('./routes/progress');
 const challengesRoutes = require('./routes/challenges');
@@ -22,21 +33,51 @@ const { getCorsOptions } = require('./cors-config');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Log all environment variables for debugging (except sensitive ones)
+console.log('Environment variables:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('PORT:', process.env.PORT);
+console.log('JWT_SECRET set:', process.env.JWT_SECRET ? 'Yes' : 'No');
+console.log('MONGO_URI set:', process.env.MONGO_URI ? 'Yes' : 'No');
+console.log('ALLOWED_ORIGINS:', process.env.ALLOWED_ORIGINS);
+
 // Log the MongoDB URI (but hide credentials)
 const mongoUriForLogging = process.env.MONGO_URI 
   ? process.env.MONGO_URI.replace(/:([^@]+)@/, ':***@') 
   : "mongodb://localhost:27017/coding-challenge-db";
 console.log('Attempting to connect to MongoDB:', mongoUriForLogging);
 
-// Use the connection string directly, with database name included in the .env file
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/coding-challenge-db";
+// Hardcode the MongoDB Atlas connection string as a fallback
+const ATLAS_URI = "mongodb+srv://rohanpawar3307:XKC6s6Gr7xX9Ryzv@cluster0.0usljpu.mongodb.net/coding-challenge-db?retryWrites=true&w=majority&appName=Cluster0";
+const MONGO_URI = process.env.MONGO_URI || ATLAS_URI;
 
-console.log('MongoDB URI set:', MONGO_URI ? 'Yes' : 'No');
+console.log('Using connection string (masked):', MONGO_URI.replace(/:([^@]+)@/, ':***@'));
 
-mongoose.connect(MONGO_URI)
+// Set Mongoose connection options
+const mongooseOptions = {
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+};
+
+mongoose.connect(MONGO_URI, mongooseOptions)
   .then(() => console.log('MongoDB connected successfully'))
   .catch(err => {
     console.error('MongoDB connection error:', err);
+    console.error('Connection string was:', MONGO_URI.replace(/:([^@]+)@/, ':***@'));
+    
+    // Try connecting with the hardcoded Atlas URI as a last resort
+    if (MONGO_URI !== ATLAS_URI) {
+      console.log('Trying fallback connection string...');
+      return mongoose.connect(ATLAS_URI, mongooseOptions);
+    }
+  })
+  .then(() => {
+    if (mongoose.connection.readyState === 1) {
+      console.log('MongoDB connection established successfully!');
+    }
+  })
+  .catch(err => {
+    console.error('All MongoDB connection attempts failed:', err);
     console.error('Please check your MONGO_URI environment variable');
   });
 

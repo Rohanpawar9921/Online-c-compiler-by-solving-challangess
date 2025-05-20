@@ -85,11 +85,22 @@ npm start
  # Create .env file in backend
 
  ```bash
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/coding-challenge-db?retryWrites=true&w=majority
 JWT_SECRET=your_jwt_secret_key
 PORT=5000
-
+NODE_ENV=development
+ALLOWED_ORIGINS=http://localhost:3000
 ```
+
+## 🚀 Deployment
+
+For deployment instructions, see [HOSTING.md](./HOSTING.md). You can also run:
+
+```bash
+node deploy-to-render.js
+```
+
+This will provide step-by-step instructions for setting up environment variables on Render.com.
 
 
 🚧 Feature Under Construction
