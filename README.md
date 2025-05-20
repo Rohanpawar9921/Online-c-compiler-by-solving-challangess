@@ -2,6 +2,12 @@
 
 A full-stack web application that allows users to browse coding challenges, write and compile code in an in-browser editor, and track their progress.
 
+## 🌐 Live Demo
+
+**Live Website:** [Coding Challenge Platform](https://taupe-eclair-60496b.netlify.app/)
+
+> **Note:** The code execution feature is currently disabled as Docker hosting requires a paid plan on Render.com. We are working on implementing an alternative solution and will enable this feature soon. The platform can still be explored with all other features.
+
 ## 🚀 Features
 
 - 🧩 Browse coding challenges with difficulty levels
@@ -165,6 +171,22 @@ For a quick setup, run:
 ```bash
 node deploy.js
 ```
+
+## 🤝 Help and Support
+
+This project is actively seeking help to improve the code execution feature. Current challenges:
+
+- The backend code execution relies on Docker, which requires a paid plan on Render.com
+- We're exploring alternatives like Judge0 API or other code execution services
+- If you have expertise in this area and would like to contribute, please reach out!
+
+## 👨‍💻 About the Developer
+
+This project was developed by Rohan Pawar as part of an internship project. 
+
+## 📝 License
+
+This project is open source and available under the MIT License.
 
 This script will guide you through the deployment process to MongoDB Atlas, Render.com, and Netlify.
 
