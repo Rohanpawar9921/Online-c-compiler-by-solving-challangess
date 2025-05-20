@@ -1,13 +1,14 @@
 # 💻 Coding Challenge Platform
 
-A full-stack web application that allows users to browse coding challenges, write and compile code in an in-browser editor, and track their progress (feature in progress).
+A full-stack web application that allows users to browse coding challenges, write and compile code in an in-browser editor, and track their progress.
 
 ## 🚀 Features
 
-- 🧩 Browse coding challenges with difficulty levels.
-- 💡 In-browser C code editor and compiler .
-- 🔒 Authentication system using JWT.
-- 📊 Progress tracking **(in development — open to contributions)**
+- 🧩 Browse coding challenges with difficulty levels
+- 💡 In-browser C code editor and compiler
+- 🔒 Authentication system using JWT
+- 📊 Progress tracking
+- 🌟 Badge system for achievements
 
 ## 🛠️ Tech Stack
 
@@ -23,6 +24,52 @@ A full-stack web application that allows users to browse coding challenges, writ
 - Express.js
 - MongoDB
 - JWT (Authentication)
+- Docker (for code execution)
+
+## 🚀 Deployment
+
+The application is deployed using:
+- Backend: [Render.com](https://render.com)
+- Frontend: [Netlify](https://netlify.com)
+- Database: [MongoDB Atlas](https://mongodb.com/atlas)
+
+### Deployment Instructions
+
+#### Backend (Render.com)
+
+1. Run the deployment script:
+   ```
+   .\deploy-render-fixed.ps1
+   ```
+
+2. The script will:
+   - Test your MongoDB connection
+   - Set up environment variables
+   - Push your changes to GitHub
+   - Give you instructions for completing deployment on Render.com
+
+3. On Render.com:
+   - Connect your GitHub repository
+   - Verify environment variables are set:
+     - MONGO_URI
+     - JWT_SECRET
+     - NODE_ENV=production
+     - ALLOWED_ORIGINS=*
+   - Build command: `npm install`
+   - Start command: `node index.js`
+
+#### Frontend (Netlify)
+
+1. After the backend is deployed, run:
+   ```
+   .\deploy-netlify.ps1
+   ```
+
+2. The script will:
+   - Update the API URL in your frontend
+   - Build the React application
+   - Deploy to Netlify
+   - Push your changes to GitHub
 
 ## 📂 Project Structure
 

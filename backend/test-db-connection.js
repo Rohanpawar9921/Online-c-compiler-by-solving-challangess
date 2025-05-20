@@ -14,8 +14,6 @@ console.log('Connection string (sanitized):', MONGO_URI.replace(/:([^@]+)@/, ':*
 
 // Connection options
 const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000, 
 };
 
