@@ -25,22 +25,11 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Log the MongoDB URI (but hide credentials)
 const mongoUriForLogging = process.env.MONGO_URI 
   ? process.env.MONGO_URI.replace(/:([^@]+)@/, ':***@') 
-  : "mongodb://localhost:27017/compiler-app";
+  : "mongodb://localhost:27017/coding-challenge-db";
 console.log('Attempting to connect to MongoDB:', mongoUriForLogging);
 
-// Define database name - ensure it's the same in all environments
-const DB_NAME = 'coding-challenge-db';
-
-// Process the MongoDB connection string
-let MONGO_URI = process.env.MONGO_URI || `mongodb://localhost:27017/${DB_NAME}`;
-
-// Check if we need to add the database name to the connection string
-if (process.env.MONGO_URI && !process.env.MONGO_URI.includes(`/${DB_NAME}?`)) {
-  // If the connection string doesn't already have the database name
-  MONGO_URI = process.env.MONGO_URI.includes('?')
-    ? process.env.MONGO_URI.replace('?', `/${DB_NAME}?`)
-    : `${process.env.MONGO_URI}/${DB_NAME}`;
-}
+// Use the connection string directly, with database name included in the .env file
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/coding-challenge-db";
 
 console.log('MongoDB URI set:', MONGO_URI ? 'Yes' : 'No');
 

@@ -20,6 +20,8 @@ This guide will walk you through deploying your Coding Challenge Platform to pro
 9. Get your connection string:
    - Go to "Database" → "Connect" → "Connect your application"
    - Copy the connection string and replace `<password>` with your actual password
+   - Add the database name to the connection string by inserting `/coding-challenge-db` before the `?` character
+   - Your final connection string should look like: `mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/coding-challenge-db?retryWrites=true&w=majority`
 
 ## 2️⃣ Backend: Render.com
 
