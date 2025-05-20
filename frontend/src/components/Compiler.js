@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import API_URL from '../config';
 
 const Compiler = () => {
   const [code, setCode] = useState('');
@@ -25,7 +26,7 @@ const Compiler = () => {
 
     const fetchChallenge = async () => {
       try {
-        const res = await axios.get(`/api/challenges/${challengeId}`);
+        const res = await axios.get(`${API_URL}/api/challenges/${challengeId}`);
         setChallenge(res.data);
         setCode(res.data.starterCode || '');
       } catch (err) {
@@ -48,11 +49,9 @@ const Compiler = () => {
 
     setIsLoading(true);
     setError('');
-    setOutput('');
-
-    try {
+    setOutput('');    try {
       const response = await axios.post(
-        'http://localhost:5000/compile',
+        `${API_URL}/compile`,
         { code, stdin },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -87,11 +86,9 @@ const Compiler = () => {
     let passed = true;
 
     for (const testCase of challenge.testCases) {
-      if (testCase.hidden) continue;
-
-      try {
+      if (testCase.hidden) continue;      try {
         const response = await axios.post(
-          'http://localhost:5000/compile',
+          `${API_URL}/compile`,
           { code, stdin: testCase.input },
           { headers: { Authorization: `Bearer ${token}` } }
         );  

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
 import axios from 'axios';
+import API_URL from '../config';
 
 const ProgressDashboard = ({ progress }) => {
   const [userData, setUserData] = useState(null);
@@ -9,7 +10,7 @@ const ProgressDashboard = ({ progress }) => {
 
   useEffect(() => {
     // Fetch user data (including progress) from the backend
-    axios.get('/api/progress/user-progress', {
+    axios.get(`${API_URL}/api/progress/user-progress`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -25,7 +26,7 @@ const ProgressDashboard = ({ progress }) => {
       });
       
     // Fetch badges separately
-    axios.get('/api/badges', {
+    axios.get(`${API_URL}/api/badges`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }

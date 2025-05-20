@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config';
 import '../styles/components.css'; // ensure styles are applied
 
 const ChallengeBrowser = () => {
@@ -9,7 +10,7 @@ const ChallengeBrowser = () => {
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const res = await axios.get('/api/challenges');
+        const res = await axios.get(`${API_URL}/api/challenges`);
         setChallenges(res.data);
       } catch (err) {
         console.error('Error fetching challenges:', err);
